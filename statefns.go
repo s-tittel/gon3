@@ -374,6 +374,7 @@ func lexPName(l *easylex.Lexer) easylex.StateFn {
 			break
 		}
 	}
+
 	easylex.NewMatcher().AcceptRunes(":").AssertOne(l, "Expected ':' while lexing pname")
 	// TODO: get exhaustive list of "end" chars
 	// TODO: factor this out into a matcher

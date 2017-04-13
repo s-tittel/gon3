@@ -370,7 +370,7 @@ var positiveParserTestsNoIso []string = []string{
 	"turtle-syntax-pname-esc-03",
 	"turtle-syntax-prefix-01",
 	// this library will NOT allow mixed-case prefix declarations
-	//"turtle-syntax-prefix-02",
+	// "turtle-syntax-prefix-02", // <<< commented out
 	"turtle-syntax-prefix-03",
 	"turtle-syntax-prefix-04",
 	"turtle-syntax-prefix-05",
