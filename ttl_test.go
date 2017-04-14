@@ -1,6 +1,7 @@
 package gon3
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"testing"
@@ -14,22 +15,25 @@ func TestTurtlePositive(t *testing.T) {
 		basePath := "./tests/turtle/"
 		ttlFile := basePath + testName + ".ttl"
 		ntFile := basePath + testName + ".nt"
-		ttlBytes, err := ioutil.ReadFile(ttlFile)
+		// ttlFd, err := os.Open(ttlFile)
+		ttlFd, err := ioutil.ReadFile(ttlFile)
 		if err != nil {
 			t.Fatalf("Error reading file %s", ttlFile)
 		}
-		ntBytes, err := ioutil.ReadFile(ntFile)
+		ttlReader := bytes.NewReader(ttlFd)
+		ntFd, err := ioutil.ReadFile(ntFile)
 		if err != nil {
 			t.Fatalf("Error reading file %s", ntFile)
 		}
+		ntReader := bytes.NewReader(ntFd)
 		if verbosity > 0 {
 			fmt.Printf("\nStarting test %s\n", testName)
 		}
-		ttlGraph, err := NewParser(string(ttlBytes)).Parse()
+		ttlGraph, err := NewParser("").Parse(ttlReader)
 		if err != nil {
 			t.Fatalf("Test %s failed. Error parsing %s\n(%s)", testName, ttlFile, err)
 		}
-		ntGraph, err := NewParser(string(ntBytes)).Parse()
+		ntGraph, err := NewParser("").Parse(ntReader)
 		if err != nil {
 			t.Fatalf("Test %s failed. Error parsing %s\n(%s)", testName, ntFile, err)
 		}
@@ -56,7 +60,8 @@ func TestTurtlePositiveNoIso(t *testing.T) {
 		if verbosity > 0 {
 			fmt.Printf("\nStarting test %s\n", testName)
 		}
-		_, err = NewParser(string(ttlBytes)).Parse()
+		ttlReader := bytes.NewReader(ttlBytes)
+		_, err = NewParser("").Parse(ttlReader)
 		if err != nil {
 			t.Fatalf("Test %s failed. Error parsing %s\n(%s)", testName, ttlFile, err)
 		}
@@ -74,11 +79,12 @@ func TestTurtleNegative(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Error reading test file %s", testFile)
 		}
+		br := bytes.NewReader(b)
 		if verbosity > 0 {
 			fmt.Printf("\nStarting test %s\n", testName)
 		}
-		p := NewParser(string(b))
-		_, err = p.Parse()
+		p := NewParser("")
+		_, err = p.Parse(br)
 		if err == nil {
 			t.Fatalf("Test %s failed: %s", testName, err)
 		}

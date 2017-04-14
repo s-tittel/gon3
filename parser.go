@@ -3,6 +3,8 @@ package gon3
 import (
 	"fmt"
 	"github.com/rychipman/easylex"
+	"io"
+	"io/ioutil"
 	"net/url"
 	"strings"
 )
@@ -21,12 +23,11 @@ type Parser struct {
 	curPredicate  Term
 }
 
-func NewParser(input string) *Parser {
-	base, _ := url.Parse("") // TODO: properly initialize baseuri
+func NewParser(baseUri string) *Parser {
+	base, _ := url.Parse(baseUri) // TODO: properly initialize baseuri
 	// initialize parser
 	p := &Parser{
 		Graph:         &Graph{}, // TODO: initialize
-		lex:           easylex.Lex(input, lexDocument),
 		nextTok:       make(chan easylex.Token, 1),
 		baseURI:       &IRI{base},
 		namespaces:    map[string]*IRI{}, // TODO: probably don't need these map inits
@@ -36,9 +37,16 @@ func NewParser(input string) *Parser {
 	return p
 }
 
-func (p *Parser) Parse() (*Graph, error) {
+func (p *Parser) Parse(input io.Reader) (*Graph, error) {
 	var err error
 	var done bool
+	body, err := ioutil.ReadAll(input)
+	if err != nil {
+		return p.Graph, err
+	}
+
+	p.lex = easylex.Lex(string(body), lexDocument)
+
 	for { // while the next token is not an EOF
 		done, err = p.parseStatement()
 		if done || err != nil {
