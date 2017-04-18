@@ -19,6 +19,13 @@ type IRI struct {
 	url *url.URL
 }
 
+func NewIRI(iri string) (*IRI, error) {
+	i, err := url.Parse(iri)
+	return &IRI{
+		url: i,
+	}, err
+}
+
 func (i *IRI) String() string {
 	return fmt.Sprintf("<%s>", i.url)
 }
@@ -57,6 +64,13 @@ type BlankNode struct {
 	Label string
 }
 
+func NewBlankNode(id int) *BlankNode {
+	return &BlankNode{
+		Id:    id,
+		Label: fmt.Sprintf("a%d", id),
+	}
+}
+
 func (b *BlankNode) String() string {
 	return fmt.Sprintf("_:%s", b.Label)
 }
@@ -88,6 +102,26 @@ type Literal struct {
 	LexicalForm string
 	DatatypeIRI *IRI
 	LanguageTag string
+}
+
+func NewLiteral(label string) *Literal {
+	return &Literal{
+		LexicalForm: label,
+	}
+}
+
+func NewLiteralWithDataType(label string, dtype *IRI) *Literal {
+	return &Literal{
+		LexicalForm: label,
+		DatatypeIRI: dtype,
+	}
+}
+
+func NewLiteralWithLanguage(label string, lang string) *Literal {
+	return &Literal{
+		LexicalForm: label,
+		LanguageTag: lang,
+	}
 }
 
 func (l *Literal) String() string {
