@@ -64,10 +64,9 @@ type BlankNode struct {
 	Label string
 }
 
-func NewBlankNode(id int) *BlankNode {
+func NewBlankNode(label string) *BlankNode {
 	return &BlankNode{
-		Id:    id,
-		Label: fmt.Sprintf("a%d", id),
+		Label: label,
 	}
 }
 
