@@ -547,10 +547,8 @@ func (p *Parser) parseNumericLiteral() (*Literal, error) {
 
 func (p *Parser) parseRDFLiteral() (*Literal, error) {
 	tok := p.next()
-	stringDT, _ := newIRIFromString("<http://www.w3.org/2001/XMLSchema#string>") // TODO: const
 	lit := &Literal{
 		LexicalForm: "",
-		DatatypeIRI: stringDT,
 		LanguageTag: "",
 	}
 	switch tok.Typ {

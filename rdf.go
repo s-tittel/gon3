@@ -27,6 +27,9 @@ func NewIRI(iri string) (*IRI, error) {
 }
 
 func (i *IRI) String() string {
+	if i == nil {
+		return ""
+	}
 	return fmt.Sprintf("<%s>", i.url)
 }
 
