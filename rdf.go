@@ -2,7 +2,6 @@ package gon3
 
 import (
 	"fmt"
-	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -16,14 +15,13 @@ type Term interface {
 
 // This must be a full (i.e. not relative IRI)
 type IRI struct {
-	url *url.URL
+	url string
 }
 
-func NewIRI(iri string) (*IRI, error) {
-	i, err := url.Parse(iri)
+func NewIRI(iri string) *IRI {
 	return &IRI{
-		url: i,
-	}, err
+		url: iri,
+	}
 }
 
 func (i *IRI) String() string {
@@ -47,18 +45,17 @@ func (i *IRI) RawValue() string {
 	return fmt.Sprintf("%s", i.url)
 }
 
-func newIRIFromString(s string) (*IRI, error) {
-	url, err := iriRefToURL(s)
-	return &IRI{url}, err
+func newIRIFromString(s string) *IRI {
+	url := iriRefToURL(s)
+	return &IRI{url}
 }
 
-func iriRefToURL(s string) (*url.URL, error) {
+func iriRefToURL(s string) string {
 	// strip <>, unescape, parse into url
 	if strings.HasPrefix(s, "<") {
 		s = s[1 : len(s)-1]
 	}
-	unescaped := unescapeUChar(s)
-	return url.Parse(unescaped)
+	return unescapeUChar(s)
 }
 
 // see http://www.w3.org/TR/rdf11-concepts/#dfn-blank-node
